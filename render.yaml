@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: noble-works-place-joke-generator
+    env: node
+    plan: free
+    branch: add-joke-generator
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /
