@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Random Joke Generator (Server)</title>
+  <style>
+    body { font-family: system-ui, Arial; display:flex; align-items:center; justify-content:center; height:100vh; background:#f4f6f8; margin:0; }
+    .card { background:white; border-radius:10px; padding:24px; width:min(600px,90vw); box-shadow:0 6px 20px rgba(15,25,35,0.08); text-align:center; }
+    button { margin-top:16px; padding:10px 16px; font-size:16px; border-radius:6px; border:none; cursor:pointer; background:#28a745; color:white; }
+    .joke { font-size:18px; color:#111; min-height:56px; display:flex; align-items:center; justify-content:center; }
+    .meta { margin-top:8px; color:#666; font-size:13px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Random Joke Generator (Server)</h2>
+    <div id="joke" class="joke">Click to get a joke from /api/joke</div>
+    <div id="meta" class="meta"></div>
+    <div>
+      <button id="newJoke">Get a joke</button>
+    </div>
+  </div>
+
+  <script>
+    const jokeEl = document.getElementById('joke');
+    const metaEl = document.getElementById('meta');
+    const btn = document.getElementById('newJoke');
+
+    async function fetchJoke() {
+      jokeEl.textContent = 'Loading…';
+      metaEl.textContent = '';
+      try {
+        const res = await fetch('/api/joke');
+        if (!res.ok) throw new Error('Server error: ' + res.status);
+        const data = await res.json();
+        jokeEl.textContent = data.joke || 'No joke returned';
+        metaEl.textContent = 'id: ' + (data.id || '-') + (data.fromCache ? ' (cached)' : '');
+      } catch (err) {
+        jokeEl.textContent = 'Could not load a joke. Try again later.';
+        metaEl.textContent = err.message;
+      }
+    }
+
+    btn.addEventListener('click', fetchJoke);
+  </script>
+</body>
+</html>
